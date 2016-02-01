@@ -242,7 +242,7 @@ void Hung2ControlTFModel::addMuscles(tgStructure& tetra)
 	tetra.addPair(3, 9, "gastro");//Gastrocnemius (Lateral)
 	tetra.addPair(3, 10, "gastro");//Gastrocnemius (Medial)
 	//Shin
-	tetra.addPair(1, 8, "muscle");//Tibialis Anterior
+	//tetra.addPair(1, 8, "muscle");//Tibialis Anterior
 	//Lower stabilization
 	tetra.addPair(2, 9, "muscle");//Peroneus Longus
 	tetra.addPair(4, 10, "muscle");//Plantaris (Incorrect attachment point)
@@ -256,8 +256,14 @@ void Hung2ControlTFModel::addMuscles(tgStructure& tetra)
 	tetra.addPair(7, 10, "muscle");
 	tetra.addPair(6, 9, "muscle");
 	tetra.addPair(10, 9, "muscle");
+//Added to Knee Joint to fully enclose the joint 2/1/2016
+	tetra.addPair(7, 11, "muscle"); //Added 2/1/2016
+        tetra.addPair(6, 11, "muscle"); //Added 2/1/2016
+        tetra.addPair(8, 5, "muscle"); //Added 2/1/2016
+        tetra.addPair(9, 5, "muscle"); //Added 2/1/2016
+        tetra.addPair(10, 5, "muscle"); //Added 2/1/2016
 //Femur Section
-	tetra.addPair(8, 12, "muscle");//Rectus Femoris
+	//tetra.addPair(8, 12, "muscle");//Rectus Femoris
 	tetra.addPair(7, 18, "muscle");//Vastus Medialis
 	tetra.addPair(6, 14, "muscle");//Vastus Lateralis
 	tetra.addPair(7, 16, "flexion");//Semimembranosus
