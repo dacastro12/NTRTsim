@@ -117,7 +117,7 @@ void Hung2ControlTFController::setGastroTargetLength(Hung2ControlTFModel& subjec
             newLength = dcOffset/8;
         }
 
-        if(m_totalTime > 5) {
+        if(m_totalTime > 10) {
             m_totalTime = 0;
         }
         std::cout<<"calculating gastro target length:" << newLength << "\n";

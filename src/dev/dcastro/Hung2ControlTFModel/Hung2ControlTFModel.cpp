@@ -76,7 +76,7 @@ namespace
        0.15,	// radiusB
        1000.0,   // stiffness (mass / sec^2)
        10.0,     // damping (mass / sec)
-       10.0,     // pretension (mass * length / sec^2) //5001
+       1.0,     // pretension (mass * length / sec^2) //5001
        10.0,     // triangle_length (length)
        10.0,     // triangle_height (length)
        10.0,     // Knee_height (length)
