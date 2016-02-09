@@ -62,6 +62,7 @@ namespace
         double stiffness;
         double damping;
         double pretension;
+	double knee_pretension;
         double triangle_length;
         double triangle_height;
         double Knee_height;
@@ -77,6 +78,7 @@ namespace
        1000.0,   // stiffness (mass / sec^2)
        10.0,     // damping (mass / sec)
        1.0,     // pretension (mass * length / sec^2) //5001
+       500.0,   //knee pretension (500 N)
        10.0,     // triangle_length (length)
        10.0,     // triangle_height (length)
        10.0,     // Knee_height (length)
@@ -251,17 +253,17 @@ void Hung2ControlTFModel::addMuscles(tgStructure& tetra)
 	tetra.addPair(8, 2, "muscle");
 
 //Knee Joint Ligaments *********May need to rearrange for anatomical correctness************
-	tetra.addPair(8, 6, "muscle");
-	tetra.addPair(8, 7, "muscle");
-	tetra.addPair(7, 10, "muscle");
-	tetra.addPair(6, 9, "muscle");
-	tetra.addPair(10, 9, "muscle");
+	tetra.addPair(8, 6, "joint");
+	tetra.addPair(8, 7, "joint");
+	tetra.addPair(7, 10, "joint");
+	tetra.addPair(6, 9, "joint");
+	tetra.addPair(10, 9, "joint");
 //Added to Knee Joint to fully enclose the joint 2/1/2016
-	tetra.addPair(7, 11, "muscle"); //Added 2/1/2016
-        tetra.addPair(6, 11, "muscle"); //Added 2/1/2016
-        tetra.addPair(8, 5, "muscle"); //Added 2/1/2016
-        tetra.addPair(9, 5, "muscle"); //Added 2/1/2016
-        tetra.addPair(10, 5, "muscle"); //Added 2/1/2016
+	tetra.addPair(7, 11, "joint"); //Added 2/1/2016
+        tetra.addPair(6, 11, "joint"); //Added 2/1/2016
+        tetra.addPair(8, 5, "joint"); //Added 2/1/2016
+        tetra.addPair(9, 5, "joint"); //Added 2/1/2016
+        tetra.addPair(10, 5, "joint"); //Added 2/1/2016
 //Femur Section
 	//tetra.addPair(8, 12, "muscle");//Rectus Femoris
 	tetra.addPair(7, 18, "muscle");//Vastus Medialis
@@ -277,8 +279,12 @@ void Hung2ControlTFModel::setup(tgWorld& world)
     // Note that pretension is defined for this string
     const tgRod::Config rodConfigA(c.radiusA, c.densityA, c.friction, c.rollFriction, c.restitution);
     const tgRod::Config rodConfigB(c.radiusB, c.densityB, c.friction, c.rollFriction, c.restitution);//Massless rods for base holder
+    //setting up muscle Configurations
     const tgBasicActuator::Config muscleConfig(c.stiffness, c.damping, c.pretension);
-    //welding holders
+   // Joint
+    const tgBasicActuator::Config KneeJointMuscleConfig(c.stiffness, c.damping, c.knee_pretension);
+
+   //welding holders
    // const tgSphere::Config weldingConfigA(0.25, c.densityA);
     //fixed segment
    /* tgStructure tetraB;
@@ -313,6 +319,7 @@ void Hung2ControlTFModel::setup(tgWorld& world)
     spec.addBuilder("gastro", new tgBasicActuatorInfo(muscleConfig));
     //spec.addBuilder("GastMedial", new tgBasicActuatorInfo(muscleConfig));
     spec.addBuilder("flexion", new tgBasicActuatorInfo(muscleConfig));
+    spec.addBuilder("joint", new tgBasicActuatorInfo(KneeJointMuscleConfig));
     //spec.addBuilder("Bicep Femoris", new tgBasicActuatorInfo(muscleConfig));
     //spec.addBuilder("sphere", new tgSphereInfo(weldingConfigA));
 
