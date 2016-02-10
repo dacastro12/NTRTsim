@@ -151,6 +151,10 @@ void Hung2ControlTFModel::addNodes(tgStructure& tetra,
     // top left mid
     tetra.addNode(1, (height*2)+2, 0);//20
 
+//new point 
+   // lower leg attachment point.....
+    tetra.addNode( 0, (height*(0.75)), 0); //21
+    tetra.addNode(0, (height*(0.75)), -0.5); //22
 
 }
 
@@ -193,7 +197,10 @@ void Hung2ControlTFModel::addPairs(tgStructure& tetra)
     tetra.addPair(3, 4, "rod");
     tetra.addPair(4, 1, "rod");   
 	//tibia and fibula structure
-    tetra.addPair(0, 5, "rod");
+    tetra.addPair(0, 21, "rod");
+    tetra.addPair(21, 5, "rod");
+    // attachment point
+    tetra.addPair(21, 22, "rod");
 	// lower knee joint
     tetra.addPair( 5,  6, "rod");
     tetra.addPair( 5,  7, "rod");
@@ -268,9 +275,11 @@ void Hung2ControlTFModel::addMuscles(tgStructure& tetra)
 	//tetra.addPair(8, 12, "muscle");//Rectus Femoris
 	tetra.addPair(7, 18, "muscle");//Vastus Medialis
 	tetra.addPair(6, 14, "muscle");//Vastus Lateralis
-	tetra.addPair(7, 16, "flexion");//Semimembranosus
-	tetra.addPair(6, 16, "flexion");//Bicep Femoris Long Head
+	tetra.addPair(7, 17, "flexion");//Semimembranosus (stablization)
+	tetra.addPair(6, 15, "flexion");//Bicep Femoris Long Head (stablization)
 	//May need to change geometry of the attachment point 17 and 15 to provide torque to flexion
+        tetra.addPair(17,22, "gastro");//Semimebranosus
+        tetra.addPair(15, 22, "gastro");//Bicep Femoris Long Head
 }
 
 void Hung2ControlTFModel::setup(tgWorld& world)
