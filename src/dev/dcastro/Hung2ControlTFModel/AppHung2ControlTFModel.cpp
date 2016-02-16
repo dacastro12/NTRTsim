@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     // the world will delete this
     tgBoxGround* ground = new tgBoxGround(groundConfig);
 
-    const tgWorld::Config config(9.81); // gravity, m/sec^2(9.81) for cm 981 cm/sec^2
+    const tgWorld::Config config(98.1); // gravity, m/sec^2(9.81) for cm 981 cm/sec^2
     tgWorld world(config, ground);
 
     // Second create the view

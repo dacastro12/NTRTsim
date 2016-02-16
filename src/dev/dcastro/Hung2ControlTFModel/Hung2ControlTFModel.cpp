@@ -63,28 +63,31 @@ namespace
         double damping;
         double pretension;
 	double knee_pretension;
-        double triangle_length;
-        double triangle_height;
-        double Knee_height;
-	 double friction;
+        double total_height;
+        double femur_c;
+        double fibia_c;
+	double friction;
         double rollFriction;
         double restitution;
+        
+        
     } c =
    {
-       0.2,     // density (mass / length^3)
+       0.05,     // density (mass / length^3)
        0.0,     // density
-       0.25,     // radius (length)
-       0.15,	// radiusB
-       1000.0,   // stiffness (mass / sec^2)
-       10.0,     // damping (mass / sec)
-       1.0,     // pretension (mass * length / sec^2) //5001
-       500.0,   //knee pretension (500 N)
-       10.0,     // triangle_length (length)
-       10.0,     // triangle_height (length)
-       10.0,     // Knee_height (length)
+       0.1197,     // radius (length) (should be 0.01197m)
+       0.1197,	// radiusB
+       3000.0,   // stiffness (mass / sec^2)
+       200.0,     // damping (mass / sec)
+       10.0,     // pretension (mass * length / sec^2) //5001
+       500.0,   //knee pretension (500 N= kg*m/s^2 = 50000 kg*cm/s^2)
+       17.78,     // total height in decimeters (5'10"= 1.778m)
+       0.245,     // femur constant (length)
+       0.245,     // fibia constant (length)
        0.99,      // friction (unitless)
        0.01,     // rollFriction (unitless)
-       0.0,      // restitution (?)	
+       0.0,      // restitution (?)
+           	
   };
 } // namespace
 
@@ -98,63 +101,63 @@ Hung2ControlTFModel::~Hung2ControlTFModel()
 }
 
 void Hung2ControlTFModel::addNodes(tgStructure& tetra,
-                            double edge,
-                            double width,
-                            double height)
+                            double height,
+                            double femur,
+                            double fibia)
 {
 
 //tibia and fibia (Cross Beams)
     //bottom origin
 	tetra.addNode(0,0,0);//0
     // bottom front
-    tetra.addNode(0, 0, 1.75); // 1
+    tetra.addNode(0, 0, (height*fibia*0.25)); // 1
     // bottom left
-    tetra.addNode( 1.75, 0, 0); // 2
+    tetra.addNode( (height*fibia*0.25), 0, 0); // 2
     // bottom back
-    tetra.addNode(0, 0, -1.75); // 3
+    tetra.addNode(0, 0, -(height*fibia*0.25)); // 3
     // bottom right
-    tetra.addNode(-1.75, 0, 0); //4
+    tetra.addNode(-(height*fibia*0.25), 0, 0); //4
     //lower knee joint origin
-	tetra.addNode(0, height, 0);//5
+	tetra.addNode(0, 0.75*height*fibia, 0);//5
     //knee joint left
-    tetra.addNode(1.5, height+2, 0); // 6
+    tetra.addNode(0.25*height*fibia, height*fibia, 0); // 6
     //knee joint right
-    tetra.addNode( -1.5, height+2, 0); // 7
+    tetra.addNode( -0.25*height*fibia, height*fibia, 0); // 7
     
 
 
 //femur
     // knee joint front (patella)
-    tetra.addNode(0, height, 2); // 8
+    tetra.addNode(0, height*fibia, height*femur*0.25); // 8
     // knee joint left
-    tetra.addNode(1.25, height, -1.25); //9
+    tetra.addNode(height*femur*0.25, height*fibia, -height*femur*0.25); //9
     // knee joint right
-    tetra.addNode(-1.25, height, -1.25); //10
+    tetra.addNode(-height*femur*0.25, height*fibia, -height*femur*0.25); //10
     // knee joint origin
-    tetra.addNode(0, height+2, 0); // 11
+    tetra.addNode(0, height*fibia + 0.25*height*femur, 0); // 11
     // top origin
-    tetra.addNode( 0, (height*2)+2, 0); // 12
+    tetra.addNode( 0, height*fibia + height*femur, 0); // 12
     // top front
-    tetra.addNode(0, (height*2)+2, 2); // 13
+    tetra.addNode(0, height*fibia + height*femur, 0.5*height*femur); // 13
     // top front left
-    tetra.addNode(1, (height*2)+2, 1);// 14
+    tetra.addNode(0.25*height*femur, height*fibia + height*femur, 0.25*height*femur);// 14
     //top back left
-    tetra.addNode(1, (height*2)+2, -1); //15
+    tetra.addNode(0.25*height*femur, height*fibia + height*femur, -0.25*height*femur); //15
     // top back 
-    tetra.addNode(0, (height*2)+2, -2); // 16
+    tetra.addNode(0, height*fibia + height*femur, -0.5*height*femur); // 16
     // top back right
-    tetra.addNode( -1, (height*2)+2, -1); // 17
+    tetra.addNode( -0.25*height*femur, height*fibia + height*femur, -0.25*height*femur); // 17
     // top front right
-    tetra.addNode(-1, (height*2)+2, 1); // 18
+    tetra.addNode(-0.25*height*femur, height*fibia + height*femur, 0.25*height*femur); // 18
     // top right mid
-    tetra.addNode(-1, (height*2)+2, 0);//19
+    tetra.addNode(-0.25*height*femur, height*fibia + height*femur, 0);//19
     // top left mid
-    tetra.addNode(1, (height*2)+2, 0);//20
+    tetra.addNode(0.25*height*femur, height*fibia + height*femur, 0);//20
 
 //new point 
    // lower leg attachment point.....
-    tetra.addNode( 0, (height*(0.75)), 0); //21
-    tetra.addNode(0, (height*(0.75)), -0.5); //22
+    tetra.addNode( 0, (height*fibia*(0.5)), 0); //21
+    tetra.addNode(0, (height*fibia*(0.5)), -0.175); //22
 
 }
 
@@ -275,11 +278,11 @@ void Hung2ControlTFModel::addMuscles(tgStructure& tetra)
 	//tetra.addPair(8, 12, "muscle");//Rectus Femoris
 	tetra.addPair(7, 18, "muscle");//Vastus Medialis
 	tetra.addPair(6, 14, "muscle");//Vastus Lateralis
-	tetra.addPair(7, 17, "flexion");//Semimembranosus (stablization)
-	tetra.addPair(6, 15, "flexion");//Bicep Femoris Long Head (stablization)
+	tetra.addPair(7, 17, "muscle");//Semimembranosus (stablization)
+	tetra.addPair(6, 15, "muscle");//Bicep Femoris Long Head (stablization)
 	//May need to change geometry of the attachment point 17 and 15 to provide torque to flexion
-        tetra.addPair(17,22, "gastro");//Semimebranosus
-        tetra.addPair(15, 22, "gastro");//Bicep Femoris Long Head
+        tetra.addPair(17,22, "flexion");//Semimebranosus
+        tetra.addPair(15, 22, "flexion");//Bicep Femoris Long Head
 }
 
 void Hung2ControlTFModel::setup(tgWorld& world)
@@ -309,7 +312,7 @@ void Hung2ControlTFModel::setup(tgWorld& world)
   //  tetra.addChild(tB);
 	
     // Add nodes to the structure
-    addNodes(tetra, c.triangle_length, c.triangle_height, c.Knee_height);
+    addNodes(tetra, c.total_height, c.femur_c, c.fibia_c);
 
     // Add rods to the structure
     addPairs(tetra);
@@ -318,7 +321,7 @@ void Hung2ControlTFModel::setup(tgWorld& world)
     addMuscles(tetra);
 
     // Move the structure so it doesn't start in the ground
-    tetra.move(btVector3(0, 10, 0));
+    tetra.move(btVector3(0, 5, 0));
 
     // Create the build spec that uses tags to turn the structure into a real model
     tgBuildSpec spec;
