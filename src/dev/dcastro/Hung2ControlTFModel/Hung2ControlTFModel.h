@@ -108,14 +108,14 @@ private:
      * the nodes based on construction parameters. Rewrite this function
      * for your own models
      * @param[in] s: A tgStructure that we're building into
-     * @param[in] edge: the X distance of the base points
-     * @param[in] width: the Z distance of the base triangle
-     * @param[in] height: the Y distance along the axis of the prism
+     * @param[in] height: the total height of the human
+     * @param[in] femur: the proportion constant of the femur to height
+     * @param[in] tibia: the proportion constant of the tibia to height
      */
-    static void addNodes(tgStructure& tetra,
-                            double edge,
-                            double width,
-                            double height);
+    static void addNodes(tgStructure& s,
+                            double height,
+                            double femur,
+                            double tibia);
 
    /* static void addNodesB(tgStructure& tetra,
                             double edge,
@@ -127,7 +127,7 @@ private:
      * relevant nodes. Rewrite this function for your own models.
      * @param[in] s A tgStructure that we're building into
      */
-    static void addPairs(tgStructure& tetra);
+    static void addRods(tgStructure& s);
    /* static void addPairsB(tgStructure& tetra);
 */
 
@@ -136,7 +136,7 @@ private:
      * the relevant nodes. Rewrite this function for your own models.
      * @param[in] s A tgStructure that we're building into
      */
-    static void addMuscles(tgStructure& tetra);
+    static void addMuscles(tgStructure& s);
 
 private:
     /**
