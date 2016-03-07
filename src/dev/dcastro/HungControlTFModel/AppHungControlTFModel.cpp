@@ -70,16 +70,18 @@ int main(int argc, char** argv)
     // Fourth create the models with their controllers and add the models to the
     // simulation
     HungControlTFModel* const myModel = new HungControlTFModel();
+    //for just static model uncomment the below text
+      //HungControlTFModel* const myModel = new HungControlTFModel;
 
     // Fifth, select the controller to use 
     HungControlTFController* const pTC = new HungControlTFController(5, timestep_physics);
 
     myModel->attach(pTC);
     // Add the model to the world
-    simulation.addModel(myModel);
+      simulation.addModel(myModel);
 
-    simulation.run();
-    simulation.reset();
+      simulation.run();
+      simulation.reset();
 
     //Teardown is handled by delete, so that should be automatic
     return 0;

@@ -100,7 +100,7 @@ void Hung2ControlTFController::onStep(Hung2ControlTFModel& subject, double dt) {
  
 void Hung2ControlTFController::setFlexionTargetLength(Hung2ControlTFModel& subject, double dt) {
     const double mean_flexion_length = 12; //TODO: define according to vars
-    double newLength = 0;
+    double newLength = 5;
     const double amplitude    = mean_flexion_length/1;
     //const double angular_freq = 2;
     //const double phase = 0;
@@ -116,8 +116,8 @@ void Hung2ControlTFController::setFlexionTargetLength(Hung2ControlTFModel& subje
         if(newLength < dcOffset/3) {
             newLength = dcOffset/3;
         }
-
-        if(m_totalTime > 10) {
+//Total time was 10
+        if(m_totalTime > 5) {
             m_totalTime = 0;
         }
         std::cout<<"calculating flexion target length:" << newLength << "\n";
@@ -193,7 +193,7 @@ void Hung2ControlTFController::updateActions(Hung2ControlTFModel& subject, doubl
 //Scale actions according to Min and Max length of muscles.
 vector< vector <double> > Hung2ControlTFController::transformActions(vector< vector <double> > actions)
 {
-	double min=4;
+	double min=6;
 	double max=12;
 	double range=max-min;
 	double scaledAct;

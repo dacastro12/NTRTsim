@@ -262,6 +262,7 @@ void HungControlTFModel::addMuscles(tgStructure& tetra)
 	tetra.addPair(6, 14, "muscle");//Vastus Lateralis
 	tetra.addPair(7, 16, "flexion");//Semimembranosus
 	tetra.addPair(6, 16, "flexion");//Bicep Femoris Long Head
+	tetra.addPair(5, 16, "flexion"); //Real bicep (3/4)
 	//May need to change geometry of the attachment point 17 and 15 to provide torque to flexion
 }
 

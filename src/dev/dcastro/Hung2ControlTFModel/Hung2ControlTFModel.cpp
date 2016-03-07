@@ -174,8 +174,8 @@ void Hung2ControlTFModel::addNodes(tgStructure& s,
 
 //new point 
    // lower leg attachment point.....
-    s.addNode( 0, (height*fibia*(0.5)), 0); //21
-    s.addNode(0, (height*fibia*(0.5)), -0.175); //22
+    s.addNode( 0, (height*fibia*(0.7)), 0); //21
+    s.addNode(0, (height*fibia*(0.7)), -0.175); //22
 
 }
 
@@ -274,18 +274,18 @@ void Hung2ControlTFModel::addMuscles(tgStructure& s)
 	//Shin
 	//s.addPair(1, 8, "muscle");//Tibialis Anterior
 	//Lower stabilization
-	s.addPair(2, 9, "muscle");//Peroneus Longus
-	s.addPair(4, 10, "muscle");//Plantaris (Incorrect attachment point)
+	//s.addPair(2, 9, "muscle");//Peroneus Longus
+	//s.addPair(4, 10, "muscle");//Plantaris (Incorrect attachment point)
 	//********Thought to be Patella Tendons but need feedback *************
-	s.addPair(8, 4, "muscle");
-	s.addPair(8, 2, "muscle");
+	s.addPair(8, 0, "muscle");
+	//s.addPair(8, 2, "muscle");
 
 //Knee Joint Ligaments *********May need to rearrange for anatomical correctness************
 	s.addPair(8, 6, "joint");
 	s.addPair(8, 7, "joint");
 	s.addPair(7, 10, "joint");
 	s.addPair(6, 9, "joint");
-	s.addPair(10, 9, "joint");
+	//s.addPair(10, 9, "joint");//Making a straight line in the back of joint.
 //Added to Knee Joint to fully enclose the joint 2/1/2016
 	s.addPair(7, 11, "joint"); //Added 2/1/2016
         s.addPair(6, 11, "joint"); //Added 2/1/2016
