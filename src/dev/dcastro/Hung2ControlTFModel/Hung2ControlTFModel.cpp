@@ -28,6 +28,7 @@
 // This library
 #include "core/tgRod.h"
 #include "core/tgBasicActuator.h"
+#include "core/abstractMarker.h"
 #include "tgcreator/tgBuildSpec.h"
 #include "tgcreator/tgBasicActuatorInfo.h"
 #include "tgcreator/tgKinematicContactCableInfo.h"
@@ -36,6 +37,8 @@
 #include "tgcreator/tgStructureInfo.h"
 // The Bullet Physics library
 #include "btBulletDynamicsCommon.h"
+#include "LinearMath/btScalar.h"
+#include "LinearMath/btVector3.h"
 // The C++ Standard Library
 #include <stdexcept>
 #include <iostream>
@@ -177,6 +180,8 @@ void Hung2ControlTFModel::addNodes(tgStructure& s,
     s.addNode( 0, (height*fibia*(0.7)), 0); //21
     s.addNode(0, (height*fibia*(0.7)), -0.175); //22
 
+  //ee tracker 
+    s.addNode(0,-1,0);//23
 }
 
 /*void Hung2ControlTFModel::addNodesB(tgStructure& s,
@@ -213,6 +218,8 @@ void Hung2ControlTFModel::addRods(tgStructure& s)
     s.addPair( 0,  2, "rod");
     s.addPair( 0,  3, "rod");
     s.addPair( 0, 4, "rod");
+    s.addPair( 0, 23, "ee endeffector");
+
     s.addPair(1, 2, "rod");
     s.addPair(2, 3, "rod");
     s.addPair(3, 4, "rod");
@@ -309,7 +316,9 @@ void Hung2ControlTFModel::setup(tgWorld& world)
     // Note that pretension is defined for this string
     const tgRod::Config rodConfigA(cRod.radiusA, cRod.densityA, cRod.friction, cRod.rollFriction, cRod.restitution);
     const tgRod::Config rodConfigB(cRod.radiusB, cRod.densityB, cRod.friction, cRod.rollFriction, cRod.restitution);//Massless rods for base holder
-    //setting up muscle Configurations
+       const tgRod::Config eeConfig(cRod.radiusA, cRod.densityA/4, cRod.friction, cRod.rollFriction, cRod.restitution);
+
+//setting up muscle Configurations
     const tgBasicActuator::Config muscleConfig(cCable.stiffness, cCable.damping, cCable.pretension, cCable.history, cCable.maxTens, cCable.targetVelocity);
    // Joint
     const tgBasicActuator::Config KneeJointMuscleConfig(cCable.stiffness, cCable.damping, cCable.knee_pretension, cCable.history, cCable.maxTens, cCable.targetVelocity);
@@ -345,6 +354,7 @@ void Hung2ControlTFModel::setup(tgWorld& world)
     tgBuildSpec spec;
     spec.addBuilder("rodB", new tgRodInfo(rodConfigB));    
     spec.addBuilder("rod", new tgRodInfo(rodConfigA));
+    spec.addBuilder("ee", new tgRodInfo(eeConfig));
     spec.addBuilder("muscle", new tgBasicActuatorInfo(muscleConfig));
     spec.addBuilder("gastro", new tgBasicActuatorInfo(muscleConfig));
     //spec.addBuilder("GastMedial", new tgBasicActuatorInfo(muscleConfig));

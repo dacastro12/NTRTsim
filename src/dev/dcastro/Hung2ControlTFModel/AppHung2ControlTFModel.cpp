@@ -70,9 +70,9 @@ int main(int argc, char** argv)
     // Fourth create the models with their controllers and add the models to the
     // simulation
     Hung2ControlTFModel* const myModel = new Hung2ControlTFModel();
-
+    btVector3 goalTrajectory = btVector3(0,0,0);
     // Fifth, select the controller to use 
-    Hung2ControlTFController* const pTC = new Hung2ControlTFController(5, timestep_physics);
+    Hung2ControlTFController* const pTC = new Hung2ControlTFController(5, timestep_physics, goalTrajectory);
 
     myModel->attach(pTC);
     // Add the model to the world

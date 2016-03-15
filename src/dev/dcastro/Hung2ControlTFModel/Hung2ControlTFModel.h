@@ -30,6 +30,7 @@
 // This library
 #include "core/tgModel.h"
 #include "core/tgSubject.h"
+#include "core/tgRod.h"
 // The C++ Standard Library
 #include <vector>
 #include <map>
@@ -144,6 +145,7 @@ private:
      * through setup when it is filled using tgModel's find methods
      */
     std::vector<tgBasicActuator*> allMuscles;
+    std::vector<btVector3> nodePositions;
 };
 
 #endif  // Hung2CONTROL_KNEE_MODEL_H

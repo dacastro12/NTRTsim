@@ -30,24 +30,33 @@
 #include "Hung2ControlTFModel.h"
 // This library
 #include "core/tgBasicActuator.h"
+#include "controllers/tgTensionController.h"
+//Bullet Physics
+#include "LinearMath/btScalar.h"
+#include "LinearMath/btVector3.h"
 // The C++ Standard Library
 #include <cassert>
 #include <stdexcept>
 #include <vector>
+#include <math.h>
 
 # define M_PI 3.14159265358979323846 
 
 using namespace std;
 
 //Constructor using the model subject and a single pref length for all muscles.
-Hung2ControlTFController::Hung2ControlTFController(const double initialLength, double timestep) :
+Hung2ControlTFController::Hung2ControlTFController(const double initialLength, double timestep, btVector3 goalTrajectory) :
     m_initialLengths(initialLength),
     m_totalTime(0.0),
-    dt(timestep) {}
+    dt(timestep) {
+    this->initPos = btVector3(0,0,0); 
+    this->trajectory = btVector3(goalTrajectory.getX(),goalTrajectory.getY(),goalTrajectory.getZ());
+}
 
 //Fetch all the muscles and set their preferred length
 void Hung2ControlTFController::onSetup(Hung2ControlTFModel& subject) {
 	this->m_totalTime=0.0;
+        this->initPos = endEffectorCOM(subject);
     const double flexion_length = 12;
     //const double brachioradialis_length = 12;
     //const double anconeus_length        = 6;
@@ -91,11 +100,14 @@ void Hung2ControlTFController::onStep(Hung2ControlTFModel& subject, double dt) {
     // Update controller's internal time
     if (dt <= 0.0) { throw std::invalid_argument("dt is not positive"); }
     m_totalTime+=dt;
-
+    
     setFlexionTargetLength(subject, dt); //pitch
  //   setAnconeusTargetLength(subject, dt);        //yaw
     moveAllMotors(subject, dt);
     //updateActions(dt);
+
+    btVector3 ee = endEffectorCOM(subject);
+    std::cout << m_totalTime << " " << ee.getX() << " " << ee.getY() << " " << ee.getZ() << std::endl;
 }
  
 void Hung2ControlTFController::setFlexionTargetLength(Hung2ControlTFModel& subject, double dt) {
@@ -110,7 +122,7 @@ void Hung2ControlTFController::setFlexionTargetLength(Hung2ControlTFModel& subje
     for (size_t i=0; i<flexion.size(); i++) {
 		tgBasicActuator * const pMuscle = flexion[i];
 		assert(pMuscle != NULL);
-        cout <<"t: " << pMuscle->getCurrentLength() << endl;
+        //cout <<"t: " << pMuscle->getCurrentLength() << endl;
         //newLength = amplitude * sin(angular_freq * m_totalTime + phase) + dcOffset;
         newLength = dcOffset - amplitude*m_totalTime/5;
         if(newLength < dcOffset/3) {
@@ -120,10 +132,11 @@ void Hung2ControlTFController::setFlexionTargetLength(Hung2ControlTFModel& subje
         if(m_totalTime > 5) {
             m_totalTime = 0;
         }
-        std::cout<<"calculating flexion target length:" << newLength << "\n";
-        std::cout<<"m_totalTime: " << m_totalTime << "\n";
+
+        //std::cout<<"calculating flexion target length:" << newLength << "\n";
+        //std::cout<<"m_totalTime: " << m_totalTime << "\n";
 		pMuscle->setControlInput(newLength, dt);
-        cout <<"t+1: " << pMuscle->getCurrentLength() << endl;
+        //cout <<"t+1: " << pMuscle->getCurrentLength() << endl;
     }
 }
 /*
@@ -223,4 +236,10 @@ void Hung2ControlTFController::applyActions(Hung2ControlTFModel& subject, vector
 		//cout<<"i: "<<i<<" length: "<<act[i][0]<<endl;
 		pMuscle->setControlInput(act[i][0]);
 	}
+}
+
+btVector3 Hung2ControlTFController::endEffectorCOM(Hung2ControlTFModel& subject) {
+	const std::vector<tgRod*> endEffector = subject.find<tgRod>("endeffector");
+	assert(!endEffector.empty());
+	return endEffector[0]->centerOfMass();
 }

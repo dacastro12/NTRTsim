@@ -29,9 +29,13 @@
 
 // This library
 #include "core/tgObserver.h"
+#include "controllers/tgTensionController.h"
 #include "learning/Adapters/AnnealAdapter.h" //************What is this?***********8
+#include "core/tgBasicActuator.h"
 #include <vector>
-
+//Bullet Physics
+#include "LinearMath/btScalar.h"
+#include "LinearMath/btVector3.h"
 // Forward declarations
 class Hung2ControlTFModel;
 
@@ -54,7 +58,7 @@ public:
    */
   
   // Note that currently this is calibrated for decimeters.
-	Hung2ControlTFController(const double prefLength, double timestep);
+	Hung2ControlTFController(const double prefLength, double timestep, btVector3 goalTrajectory);
     
   /**
    * Nothing to delete, destructor must be virtual
@@ -81,6 +85,10 @@ private:
  // void setAnconeusTargetLength(ScarrArmModel& subject, double dt);
   void moveAllMotors(Hung2ControlTFModel& subject, double dt);
   void updateActions(Hung2ControlTFModel& subject, double dt);
+
+  btVector3 initPos;
+  btVector3 trajectory;
+  btVector3 endEffectorCOM(Hung2ControlTFModel& subject);
 };
 
 #endif // Hung2CONTROLTF_CONTROLLER_H
