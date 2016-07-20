@@ -64,8 +64,8 @@ namespace
        1000.0,   // stiffness (mass / sec^2)
        10.0,     // damping (mass / sec)
        500.0,     // pretension (mass * length / sec^2)
-       10.0,     // triangle_length (length)
-       10.0,     // triangle_height (length)
+       50.0,     // 10 triangle_length (length)
+       20.0,     // 10 triangle_height (length)
        20.0,     // prism_height (length)
   };
 } // namespace
