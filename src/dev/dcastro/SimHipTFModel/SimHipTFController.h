@@ -77,7 +77,7 @@ private:
   double dt;
   //AnnealAdapter evolutionAdapter;
     
-  void setGastroTargetLength(SimHipTFModel& subject, double dt);
+  void setflexionTargetLength(SimHipTFModel& subject, double dt);
  // void setAnconeusTargetLength(ScarrArmModel& subject, double dt);
   void moveAllMotors(SimHipTFModel& subject, double dt);
   void updateActions(SimHipTFModel& subject, double dt);

@@ -77,7 +77,7 @@ private:
   double dt;
   //AnnealAdapter evolutionAdapter;
     
-  void setGastroTargetLength(HungControlTFModel& subject, double dt);
+  void setFlexionTargetLength(HungControlTFModel& subject, double dt);
  // void setAnconeusTargetLength(ScarrArmModel& subject, double dt);
   void moveAllMotors(HungControlTFModel& subject, double dt);
   void updateActions(HungControlTFModel& subject, double dt);

@@ -48,20 +48,20 @@ SimHipTFController::SimHipTFController(const double initialLength, double timest
 //Fetch all the muscles and set their preferred length
 void SimHipTFController::onSetup(SimHipTFModel& subject) {
 	this->m_totalTime=0.0;
-    const double gastro_length = 5;
+    const double flexion_length = 12;
     //const double brachioradialis_length = 12;
     //const double anconeus_length        = 6;
     //const double supportstring_length   = 0.5;
 
-	const std::vector<tgBasicActuator*> gastro = subject.find<tgBasicActuator>("gastro");
+	const std::vector<tgBasicActuator*> flexion = subject.find<tgBasicActuator>("flexion");
 	//const std::vector<tgBasicActuator*> anconeus        = subject.find<tgBasicActuator>("anconeus");
 	//const std::vector<tgBasicActuator*> brachioradialis = subject.find<tgBasicActuator>("brachioradialis");
 	//const std::vector<tgBasicActuator*> supportstrings  = subject.find<tgBasicActuator>("support");
 
-    for (size_t i=0; i<gastro.size(); i++) {
-		tgBasicActuator * const pMuscle = gastro[i];
+    for (size_t i=0; i<flexion.size(); i++) {
+		tgBasicActuator * const pMuscle = flexion[i];
 		assert(pMuscle != NULL);
-		pMuscle->setControlInput(gastro_length, dt);
+		pMuscle->setControlInput(flexion_length, dt);
     }
  /*                                       
     // using for loops to anticipate more muscle fibers in the future
@@ -92,35 +92,35 @@ void SimHipTFController::onStep(SimHipTFModel& subject, double dt) {
     if (dt <= 0.0) { throw std::invalid_argument("dt is not positive"); }
     m_totalTime+=dt;
 
-    setGastroTargetLength(subject, dt); //pitch
+    setflexionTargetLength(subject, dt); //pitch
  //   setAnconeusTargetLength(subject, dt);        //yaw
     moveAllMotors(subject, dt);
     //updateActions(dt);
 }
  
-void SimHipTFController::setGastroTargetLength(SimHipTFModel& subject, double dt) {
-    const double mean_gastro_length = 12; //TODO: define according to vars
-    double newLength = 0;
-    const double amplitude    = mean_gastro_length/1;
+void SimHipTFController::setflexionTargetLength(SimHipTFModel& subject, double dt) {
+    const double mean_flexion_length = 12; //TODO: define according to vars
+    double newLength = 5;
+    const double amplitude    = mean_flexion_length/1;
     //const double angular_freq = 2;
     //const double phase = 0;
-    const double dcOffset     = mean_gastro_length;
-    const std::vector<tgBasicActuator*> gastro = subject.find<tgBasicActuator>("gastro");
+    const double dcOffset     = mean_flexion_length;
+    const std::vector<tgBasicActuator*> flexion = subject.find<tgBasicActuator>("flexion");
 
-    for (size_t i=0; i<gastro.size(); i++) {
-		tgBasicActuator * const pMuscle = gastro[i];
+    for (size_t i=0; i<flexion.size(); i++) {
+		tgBasicActuator * const pMuscle = flexion[i];
 		assert(pMuscle != NULL);
         cout <<"t: " << pMuscle->getCurrentLength() << endl;
         //newLength = amplitude * sin(angular_freq * m_totalTime + phase) + dcOffset;
         newLength = dcOffset - amplitude*m_totalTime/5;
-        if(newLength < dcOffset/8) {
-            newLength = dcOffset/8;
+        if(newLength < dcOffset/3) {
+            newLength = dcOffset/3;
         }
 
         if(m_totalTime > 5) {
             m_totalTime = 0;
         }
-        std::cout<<"calculating gastro target length:" << newLength << "\n";
+        std::cout<<"calculating flexion target length:" << newLength << "\n";
         std::cout<<"m_totalTime: " << m_totalTime << "\n";
 		pMuscle->setControlInput(newLength, dt);
         cout <<"t+1: " << pMuscle->getCurrentLength() << endl;
@@ -194,7 +194,7 @@ void SimHipTFController::updateActions(SimHipTFModel& subject, double dt) {
 vector< vector <double> > SimHipTFController::transformActions(vector< vector <double> > actions)
 {
 	double min=6;
-	double max=11;
+	double max=12;
 	double range=max-min;
 	double scaledAct;
 	for(unsigned i=0;i<actions.size();i++) {

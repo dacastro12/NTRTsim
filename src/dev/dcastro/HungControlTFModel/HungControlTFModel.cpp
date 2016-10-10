@@ -74,9 +74,9 @@ namespace
        0.0,     // density
        0.25,     // radius (length)
        0.15,	// radiusB
-       1000.0,   // stiffness (mass / sec^2)
+       100.0,   // stiffness (mass / sec^2)
        10.0,     // damping (mass / sec)
-       10.0,     // pretension (mass * length / sec^2) //5001
+       1.0,     // pretension (mass * length / sec^2) //5001
        10.0,     // triangle_length (length)
        10.0,     // triangle_height (length)
        10.0,     // Knee_height (length)
@@ -149,6 +149,10 @@ void HungControlTFModel::addNodes(tgStructure& tetra,
     // top left mid
     tetra.addNode(1, (height*2)+2, 0);//20
 
+//new point 
+   // lower leg attachment point.....
+    tetra.addNode( 0, (height*(0.75)), 0); //21
+    tetra.addNode(0, (height*(0.75)), -0.175); //22
 
 }
 
@@ -191,7 +195,10 @@ void HungControlTFModel::addPairs(tgStructure& tetra)
     tetra.addPair(3, 4, "rod");
     tetra.addPair(4, 1, "rod");   
 	//tibia and fibula structure
-    tetra.addPair(0, 5, "rod");
+    tetra.addPair(0, 21, "rod");
+    tetra.addPair(21, 5, "rod");
+    // attachment point
+    tetra.addPair(21, 22, "rod");
 	// lower knee joint
     tetra.addPair( 5,  6, "rod");
     tetra.addPair( 5,  7, "rod");
@@ -260,11 +267,15 @@ void HungControlTFModel::addMuscles(tgStructure& tetra)
 	tetra.addPair(8, 12, "muscle");//Rectus Femoris
 	tetra.addPair(7, 18, "muscle");//Vastus Medialis
 	tetra.addPair(6, 14, "muscle");//Vastus Lateralis
-	tetra.addPair(7, 16, "flexion");//Semimembranosus
-	tetra.addPair(6, 16, "flexion");//Bicep Femoris Long Head
-	tetra.addPair(5, 16, "flexion"); //Real bicep (3/4)
+	tetra.addPair(7, 16, "muscle");//Semimembranosus
+	tetra.addPair(6, 16, "muscle");//Bicep Femoris Long Head
+	tetra.addPair(5, 16, "muscle"); //Real bicep (3/4)
 	//May need to change geometry of the attachment point 17 and 15 to provide torque to flexion
+	tetra.addPair(17,22, "flexion");//Semimebranosus
+        tetra.addPair(15, 22, "flexion");//Bicep Femoris Long Head
+
 }
+
 
 void HungControlTFModel::setup(tgWorld& world)
 {
