@@ -17,15 +17,15 @@
 */
 
 /**
- * @file AppHung2ControlTFModel.cpp
- * @brief Contains the definition function main() for the Tom Flemmons knee model
+ * @file DCModel.cpp
+ * @brief Contains the definition function main() for a branch of the Tom Flemmons knee model
  * @author Dennis Castro (code based on Brian Tietz's Prism Model)
  * $Id$
  */
 
 // This application
-#include "Hung2ControlTFModel.h"
-#include "Hung2ControlTFController.h"
+#include "DCModel.h"
+#include "DCController.h"
 //#include "FlexController.h"
 // This library
 #include "core/terrain/tgBoxGround.h"
@@ -46,7 +46,7 @@
  */
 int main(int argc, char** argv)
 {
-    std::cout << "AppHung2ControlTFModelTest" << std::endl;
+    std::cout << "AppDCModelTest" << std::endl;
 
     // First create the ground and world. Specify ground rotation in radians
     const double yaw = 0.0;
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     // the world will delete this
     tgBoxGround* ground = new tgBoxGround(groundConfig);
 
-    const tgWorld::Config config(981); // gravity, m/sec^2(9.81) for cm 981 cm/sec^2
+    const tgWorld::Config config(981); // gravity, cm/sec^2(981)
     tgWorld world(config, ground);
 
     // Second create the view
@@ -69,17 +69,19 @@ int main(int argc, char** argv)
 
     // Fourth create the models with their controllers and add the models to the
     // simulation
-    Hung2ControlTFModel* const myModel = new Hung2ControlTFModel();
-    btVector3 goalTrajectory = btVector3(0,0,0);
+    DCModel* const myModel = new DCModel();
+    //for just static model uncomment the below text
+      //DCModel* const myModel = new DCModel;
+
     // Fifth, select the controller to use 
-    Hung2ControlTFController* const pTC = new Hung2ControlTFController(5, timestep_physics, goalTrajectory);
+    DCController* const pTC = new DCController(5, timestep_physics);
 
     myModel->attach(pTC);
     // Add the model to the world
-    simulation.addModel(myModel);
+      simulation.addModel(myModel);
 
-    simulation.run();
-    simulation.reset();
+      simulation.run();
+      simulation.reset();
 
     //Teardown is handled by delete, so that should be automatic
     return 0;

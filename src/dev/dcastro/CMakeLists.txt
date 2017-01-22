@@ -11,5 +11,6 @@ subdirs(
     HungControlTFModel
     Hung2ControlTFModel
     HipControlTFModel
-    SimHipTFModel	
+    SimHipTFModel
+    DCModel	
     )

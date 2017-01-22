@@ -17,14 +17,14 @@
 */
 
 /**
- * @file HungControlTFModel.cpp
+ * @file DCModel.cpp
  * @brief Contains the definition of the members of the class ControlTFModel.
  *	Model is inspired by Tom Flemmons tensegrity model of the knee and is a working progress.
  * $Id$
  */
 
 // This module
-#include "HungControlTFModel.h"
+#include "DCModel.h"
 // This library
 #include "core/tgRod.h"
 //#include "core/tgSphere.h"
@@ -88,16 +88,16 @@ namespace
   };
 } // namespace
 
-HungControlTFModel::HungControlTFModel() :
+DCModel::DCModel() :
 tgModel()
 {
 }
 
-HungControlTFModel::~HungControlTFModel()
+DCModel::~DCModel()
 {
 }
 
-void HungControlTFModel::addNodes(tgStructure& tetra,
+void DCModel::addNodes(tgStructure& tetra,
                             double edge,
                             double width,
                             double height)
@@ -153,12 +153,12 @@ void HungControlTFModel::addNodes(tgStructure& tetra,
 
 //new point 
    // lower leg attachment point.....
-    tetra.addNode( 0, (height*(0.7)), 0); //21
-    tetra.addNode(0, (height*(0.7)), -0.175); //22
+    tetra.addNode( 0, height+1.5, -2); //21
+    //tetra.addNode(0, (height*(0.7)), -0.175); //22
 
 }
 
-/*void HungControlTFModel::addNodesB(tgStructure& tetra,
+/*void DCModel::addNodesB(tgStructure& tetra,
                             double edge,
                             double width,
                             double height)
@@ -184,7 +184,7 @@ void HungControlTFModel::addNodes(tgStructure& tetra,
     tetra.addNode(-0.6, -5, -0.6); //8
 }
 */
-void HungControlTFModel::addPairs(tgStructure& tetra)
+void DCModel::addPairs(tgStructure& tetra)
 {
 //fibula and tibia
 	//Bottom Base or Ankle
@@ -197,10 +197,10 @@ void HungControlTFModel::addPairs(tgStructure& tetra)
     tetra.addPair(3, 4, "rod");
     tetra.addPair(4, 1, "rod");   
 	//tibia and fibula structure
-    tetra.addPair(0, 21, "rod");
-    tetra.addPair(21, 5, "rod");
+    tetra.addPair(0, 5, "rod");
+    tetra.addPair(5, 21, "rod"); //rear of bottom tri
     // attachment point
-    tetra.addPair(21, 22, "rod");
+    //tetra.addPair(21, 22, "rod");
 	// lower knee joint
     tetra.addPair( 5,  6, "rod");
     tetra.addPair( 5,  7, "rod");
@@ -229,7 +229,7 @@ void HungControlTFModel::addPairs(tgStructure& tetra)
 	
 }
 
-/*void HungControlTFModel::addPairsB(tgStructure& tetra)
+/*void DCModel::addPairsB(tgStructure& tetra)
 {
 //Holding Structure (Massless)
 	//Bottom
@@ -244,7 +244,7 @@ void HungControlTFModel::addPairs(tgStructure& tetra)
     tetra.addPair( 3,  1, "rodB");
 }
 */
-void HungControlTFModel::addMuscles(tgStructure& tetra)
+void DCModel::addMuscles(tgStructure& tetra)
 {
 //Tibia and Fibia Section
 	//Calve
@@ -282,13 +282,13 @@ void HungControlTFModel::addMuscles(tgStructure& tetra)
 	//tetra.addPair(6, 16, "muscle");//Bicep Femoris Long Head
 	//tetra.addPair(5, 16, "muscle"); //Real bicep (3/4)
 	//May need to change geometry of the attachment point 17 and 15 to provide torque to flexion
-	tetra.addPair(19,22, "flexion");//Semimebranosus
-        tetra.addPair(20, 22, "flexion");//Bicep Femoris Long Head
+	tetra.addPair(8,21, "flexion");//Semimebranosus
+        //tetra.addPair(20, 21, "flexion");//Bicep Femoris Long Head
 
 }
 
 
-void HungControlTFModel::setup(tgWorld& world)
+void DCModel::setup(tgWorld& world)
 {
     // Define the configurations of the rods and strings
     // Note that pretension is defined for this string
@@ -352,7 +352,7 @@ void HungControlTFModel::setup(tgWorld& world)
     tgModel::setup(world);
 }
 
-void HungControlTFModel::step(double dt)
+void DCModel::step(double dt)
 {
     // Precondition
     if (dt <= 0.0)
@@ -367,18 +367,18 @@ void HungControlTFModel::step(double dt)
     }
 }
 
-void HungControlTFModel::onVisit(tgModelVisitor& r)
+void DCModel::onVisit(tgModelVisitor& r)
 {
     // Example: m_rod->getRigidBody()->dosomething()...
     tgModel::onVisit(r);
 }
 
-const std::vector<tgBasicActuator*>& HungControlTFModel::getAllMuscles() const
+const std::vector<tgBasicActuator*>& DCModel::getAllMuscles() const
 {
     return allMuscles;
 }
 
-void HungControlTFModel::teardown()
+void DCModel::teardown()
 {
     notifyTeardown();
     tgModel::teardown();

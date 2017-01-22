@@ -1,0 +1,8 @@
+Project(dcastro)
+
+Notes: gravity is 981 cm/sec^2 which is 9.81 m/sec2. It also seems that density is kg/cm^3 which may explain by some models need alot of force to do actuation. Revisiting this soon.
+
+HungControlTFModel:
+Current has the links of the physical model but actuation can't be acheived. Looking into what structure will work(much like what is seen in the Hung2Control Models, but with less vibration).
+
+Main reason for this model over Hung2 is due to the cable interactions causing vibrations that skew the tracking and energy analysis. 
